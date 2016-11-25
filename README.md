@@ -1,1 +1,1 @@
-# bbs/Spring MVC+Mybatis
+# bbs/Spring MVC+Mybatis+Mysql
