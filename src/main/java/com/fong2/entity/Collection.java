@@ -5,10 +5,10 @@ import java.util.Date;
 
 public class Collection implements java.io.Serializable {
 	private static final long serialVersionUID = -2735056704544326089L;
-	private Integer id;   		//鏀惰棌id
-	private Topic topic;		//鏀惰棌涓婚
-	private User user;			//鏀惰棌鐢ㄦ埛
-	private Date createAt;		//鏀惰棌鏃堕棿
+	private Integer id;   		//收藏id
+	private Topic topic;		//收藏主题
+	private User user;			//收藏用户
+	private Date createAt;		//收藏时间
 
 	public Collection() {
 	}
