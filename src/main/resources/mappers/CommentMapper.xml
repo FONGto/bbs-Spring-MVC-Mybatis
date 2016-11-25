@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.fong2.dao.CommentDao">
+ 	
+ 	<select id="findlastCommentUserIdByTopicId" parameterType="int" 
+ 		resultType="int">
+ 		select	
+ 			user_id
+		from 
+			comment
+		where status=#{0} 
+			AND topic_id=#{1}  
+			and floor=(select max(floor) from comment
+			where topic_id=#{1})
+ 	</select>
+ 	<select id="findlastCommentByTopicId" parameterType="int" 
+ 		resultType="com.fong2.entity.Comment">
+ 		select	
+ 			id as id, 
+			topic_id as topic,
+	 		user_id as user,
+			content as content,
+			create_at as createAt,
+			floor as floor,
+			like_count as likeCount,
+			status as status
+		from 
+			comment
+		where status=#{0} 
+			and topic_id=#{1} 
+			and floor=(select max(floor) from comment
+			where topic_id=#{1})
+ 	</select>
+ 	<select id="findAllByTopicIdOrderFloor" parameterType="int" 
+ 		resultType="com.fong2.entity.Comment">
+ 		select	
+ 			id as id, 
+			topic_id as topic,
+	 		user_id as user,
+			content as content,
+			create_at as createAt,
+			floor as floor,
+			like_count as likeCount,
+			status as status
+		from
+			comment
+		where 
+			status=#{0} 
+		and topic_id=#{1}
+		order by floor asc
+		
+ 	</select>
+ 	<select id="findUserIdByCommentId" parameterType="int" 
+ 		resultType="int">
+ 		select	
+	 		user_id 
+		from
+			comment
+		where 
+			id=#{0} 
+ 	</select>
+ 	<insert id="saveComment" parameterType="com.fong2.entity.Comment">
+ 		INSERT INTO 
+			comment 
+		VALUES(null,
+			#{content},
+			NOW(),
+			(
+			SELECT IFNULL((
+				SELECT *
+					FROM
+						(SELECT MAX(floor)+1 FROM `comment` WHERE topic_id=#{topic.id})u
+			),1)),
+			#{likeCount},
+			#{status},
+			#{topic.id},
+			#{user.id})
+ 	</insert>
+ 	<select id="findCommentByUserId" parameterType="int" 
+ 		resultType="com.fong2.entity.Comment">
+ 		select	
+ 			id as id, 
+			topic_id as topic,
+	 		user_id as user,
+			content as content,
+			create_at as createAt,
+			floor as floor,
+			like_count as likeCount,
+			status as status
+		from 
+			comment
+		where status=#{0} 
+			and user_id=#{1}
+ 	</select>
+ 	<select id="findByUserId" parameterType="int" 
+ 		resultMap="commentRs">
+ 		select	
+ 			c.id as id, 
+			t.id as tid,
+			t.title as ttitle,
+	 		c.user_id as user,
+			c.content as content,
+			c.create_at as createAt,
+			c.floor as floor,
+			c.like_count as likeCount,
+			c.status as status
+		from 
+			comment c
+		JOIN 
+			topic t on (t.id=c.topic_id)
+		where c.status=#{0} 
+			and c.user_id=#{1}
+ 	</select>
+ 	<resultMap type="com.fong2.entity.Comment" id="commentRs">
+	 	<id column="id" property="id" />
+	 	<id column="content" property="content"/>
+	 	<id column="createAt" property="createAt" />
+		<id column="floor" property="floor" />
+		<id column="likeCount" property="likeCount"/>
+		<id column="status" property="status" />
+	 	<association property="topic" javaType="com.fong2.entity.Topic">
+	 		<id column="tid" property="id" />
+	 		<id column="ttitle" property="title"/> 
+	 	</association>
+	 	<!-- <collection property="comments" javaType="list" 
+	 		ofType="com.fong2.note.entity.Comment" 
+	 		select="findComments" column="id">
+	 		
+	 	</collection> -->
+ 	</resultMap>
+ </mapper>

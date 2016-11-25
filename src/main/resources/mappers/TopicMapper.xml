@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.fong2.dao.TopicDao">
+ 	<select id="findAllByStatusOrderByLastCommentAtDesc" parameterType="string" 
+ 		resultType="com.fong2.entity.Topic">
+ 		SELECT 
+			id as id,
+			node_id as node,
+			user_id as user,
+			content as content,
+			create_at as createAt,
+			last_comment_at as lastCommentAt,
+			last_comment_user_id as lastCommentUserId,
+			last_comment_user as LastCommentUser,
+			like_count as likeCount,
+			score as score,
+			status as status,
+			title as title,
+			update_at as updateAt,
+			view_count as viewCount,
+			comment_count as commentCount,
+			collecton_id as collectonId
+		FROM 
+			topic t 
+		WHERE 
+			t.status=#{status}
+		ORDER BY 
+			t.last_comment_at DESC,t.create_at DESC
+ 	</select>
+ 	
+ 	<select id="findUserIdAndNodeIdByTopicId" parameterType="int"
+ 		resultType="com.fong2.entity.TopicNodeUser">
+ 		SELECT 
+			id as id,
+			user_id as userId,
+			node_id as nodeId
+		FROM 
+			topic t 
+		WHERE 
+			t.id=#{id}
+ 	</select>
+ 	<select id="getAllOrderByHot" parameterType="string" 
+ 		resultType="com.fong2.entity.Topic">
+ 		SELECT 
+			id as id,
+			node_id as node,
+			user_id as user,
+			content as content,
+			create_at as createAt,
+			last_comment_at as lastCommentAt,
+			last_comment_user_id as lastCommentUserId,
+			last_comment_user as LastCommentUser,
+			like_count as likeCount,
+			score as score,
+			status as status,
+			title as title,
+			update_at as updateAt,
+			view_count as viewCount,
+			comment_count as commentCount,
+			collecton_id as collectonId
+		FROM 
+			topic t 
+		WHERE 
+			t.status=#{status} AND t.comment_count>5	
+		ORDER BY 
+			t.comment_count DESC
+ 	</select>
+ 	<select id="findAllByStatusAndSectionId" 
+ 		resultType="com.fong2.entity.Topic">
+ 		SELECT 
+			id as id,
+			node_id as node,
+			user_id as user,
+			content as content,
+			create_at as createAt,
+			last_comment_at as lastCommentAt,
+			last_comment_user_id as lastCommentUserId,
+			last_comment_user as LastCommentUser,
+			like_count as likeCount,
+			score as score,
+			status as status,
+			title as title,
+			update_at as updateAt,
+			view_count as viewCount,
+			comment_count as commentCount,
+			collecton_id as collectonId
+		FROM 
+			topic t 
+		WHERE 
+			t.status=#{0} AND t.node_id in (select id from node where section_id =#{1}) 
+		ORDER BY
+			t.last_comment_at DESC,t.create_at DESC
+ 	</select>
+ 	<select id="findByStatusAndTopicId" 
+ 		resultType="com.fong2.entity.Topic">
+ 		SELECT 
+			id as id,
+			node_id as node,
+			user_id as user,
+			content as content,
+			create_at as createAt,
+			last_comment_at as lastCommentAt,
+			last_comment_user_id as lastCommentUserId,
+			last_comment_user as LastCommentUser,
+			like_count as likeCount,
+			score as score,
+			status as status,
+			title as title,
+			update_at as updateAt,
+			view_count as viewCount,
+			comment_count as commentCount,
+			collecton_id as collectonId
+		FROM 
+			topic t 
+		WHERE 
+			t.status=#{0} AND t.id=#{1} 
+ 	</select>
+ 	
+	<update id="updateTopicByTopicId" parameterType="com.fong2.entity.Topic">
+ 		UPDATE
+ 			topic
+ 		
+ 		<set>	
+			<if test="node!=null">
+				node_id=#{node.id},
+			</if>
+			<if test="user!=null">
+				user_id=#{user.id},
+			</if>
+			<if test="content!=null">
+				content=#{content},
+			</if>
+			<if test="lastCommentAt!=null">
+				last_comment_at=#{lastCommentAt},
+			</if>
+			<if test="lastCommentUserId!=null">
+				last_comment_user_id=#{lastCommentUserId},
+			</if>
+			<if test="LastCommentUser!=null">
+				last_comment_user=#{LastCommentUser},
+			</if>
+			<if test="likeCount!=0">
+				like_count=#{likeCount},
+			</if>
+			<if test="score!=0">
+				score=#{score},
+			</if>
+			<if test="status!=null">
+				status=#{status},
+			</if>
+			<if test="title!=null">
+				title=#{title},
+			</if>
+			<if test="updateAt!=null">
+				update_at=#{updateAt},
+			</if>
+			<if test="viewCount!=0">
+				view_count=#{viewCount},
+			</if>
+			<if test="commentCount!=0">
+				comment_count=#{commentCount},
+			</if>
+			<if test="collectonId!=null">
+				collecton_id=#{collectonId}
+			</if>
+		</set>
+		where
+			id=#{id}
+	</update>
+	<insert id="saveTopic" parameterType="com.fong2.entity.Topic">
+ 		INSERT INTO
+ 			topic
+ 		Values(null,null,0,#{content},NOW(),NOW(),null,null,
+ 			#{likeCount},#{score},#{status},#{title},null,
+ 			#{viewCount},#{node.id},#{user.id})
+	</insert>
+	<select id="findByStatusAndNodeId" parameterType="int"
+		resultType="com.fong2.entity.Topic">
+		SELECT 
+			id as id,
+			node_id as node,
+			user_id as user,
+			content as content,
+			create_at as createAt,
+			last_comment_at as lastCommentAt,
+			last_comment_user_id as lastCommentUserId,
+			last_comment_user as LastCommentUser,
+			like_count as likeCount,
+			score as score,
+			status as status,
+			title as title,
+			update_at as updateAt,
+			view_count as viewCount,
+			comment_count as commentCount,
+			collecton_id as collectonId
+		FROM 
+			topic t 
+		WHERE 
+			t.status=#{0} AND t.node_id=#{1}
+		ORDER BY
+			create_at,last_comment_at
+	</select>
+	<select id="findByStatusAndUserId" parameterType="int"
+		resultType="com.fong2.entity.Topic">
+		SELECT 
+			id as id,
+			node_id as node,
+			user_id as user,
+			content as content,
+			create_at as createAt,
+			last_comment_at as lastCommentAt,
+			last_comment_user_id as lastCommentUserId,
+			last_comment_user as LastCommentUser,
+			like_count as likeCount,
+			score as score,
+			status as status,
+			title as title,
+			update_at as updateAt,
+			view_count as viewCount,
+			comment_count as commentCount,
+			collecton_id as collectonId
+		FROM 
+			topic
+		WHERE 
+			status=#{0} AND user_id=#{1}
+		ORDER BY
+			create_at
+	</select>
+ </mapper>

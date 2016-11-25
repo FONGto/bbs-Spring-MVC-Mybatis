@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.fong2.dao.DocDao">
+ 	
+ 	<select id="findAll" resultType="com.fong2.entity.Doc">
+ 		select
+ 			id as id,
+ 			content as content,
+ 			create_at as createAt,
+ 			title as title,
+ 			update_at as updateAt, 	
+			url as url,
+			view_count as viewCount
+		from 
+			doc
+ 	</select>
+ 	<update id="modifyDoc" parameterType="com.fong2.entity.Doc">
+ 		UPDATE
+ 			doc
+	 	<set>
+	 		<if test="content!=null">
+	 			content=#{content},
+	 			update_at=now(),
+	 		</if>
+	 		<if test="title!=null">
+	 			title=#{title},
+	 		</if>
+	 		<if test="url!=null">
+	 			url=#{url},
+	 		</if>
+	 		<if test="viewCount==1">
+	 			view_count=view_count+1
+	 		</if>
+	 		<if test="viewCount>1">
+	 			view_count=#{viewCount}
+	 		</if>
+		</set>
+		WHERE 
+			id=#{id}
+ 	</update>
+ </mapper>

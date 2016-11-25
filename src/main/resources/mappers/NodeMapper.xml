@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.fong2.dao.NodeDao">
+ 	
+ 	<select id="findByTopicNodeId" parameterType="int" 
+ 		resultType="com.fong2.entity.Node">
+ 		select	
+ 			id as id,
+			section_id as section,
+	 		avatar as avatar,
+			description as description,
+			topic_count as topicCount,
+			name as name,
+			status as status
+		from 
+			node
+		where 
+			id=#{id} 
+ 	</select>
+ 	<select id="findAllOrderByTopicCountDesc"
+ 		resultType="com.fong2.entity.Node">
+ 	 	SELECT 
+ 	 		id as id,
+			section_id as section,
+	 		avatar as avatar,
+			description as description,
+			topic_count as topicCount,
+			name as name,
+			status as status
+		FROM 
+			node n 
+		ORDER BY 
+			topic_count DESC	
+ 	</select>
+ 	<select id="findBySectionId" parameterType="int" 
+ 		resultType="com.fong2.entity.Node">
+ 		SELECT 
+ 	 		id as id,
+			section_id as section,
+	 		avatar as avatar,
+			description as description,
+			topic_count as topicCount,
+			name as name,
+			status as status
+		FROM 
+			node  
+		WHERE
+			section_id=#{sectionId}
+ 	</select>
+ 	<select id="findAllNodes"
+ 		resultType="com.fong2.entity.Node">
+ 	 	SELECT 
+ 	 		id as id,
+			section_id as section,
+	 		avatar as avatar,
+			description as description,
+			topic_count as topicCount,
+			name as name,
+			status as status
+		FROM 
+			node n 
+		ORDER BY 
+			topic_count DESC	
+ 	</select>
+ 	<update id="modifyNode" parameterType="com.fong2.entity.Node">
+ 		UPDATE 
+ 			node 
+ 		<set> 
+	 		<if test="avatar!=null">
+	 			avatar=#{avatar},
+	 		</if>
+	 		<if test="description!=null">
+	 			description=#{description},
+	 		</if>
+	 		<if test="topicCount==1">
+	 			topic_count=topic_count+1,
+	 		</if>
+	 		<if test="topicCount>1">
+	 			topic_count=#{topicCount},
+	 		</if>
+	 		<if test="name!=null">
+	 			name=#{name},
+	 		</if>
+	 		<if test="status!=null">
+	 			status=#{status},
+	 		</if>
+	 		<if test="section!=null">	
+	 			section_id=#{section.id}
+	 		</if> 
+ 		</set>
+ 		WHERE 
+ 			id=#{id}
+ 	
+ 	</update>
+ </mapper>

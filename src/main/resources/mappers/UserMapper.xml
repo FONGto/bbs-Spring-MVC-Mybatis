@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.fong2.dao.UserDao">
+ 	
+ 	<select id="findByIdOrUsernameOrNick" parameterType="com.fong2.entity.User" 
+ 		resultType="com.fong2.entity.User">
+ 		select	
+ 			id as id,
+			avatar as avatar,
+  			comment_count as commentCount,
+    		company as company,
+			create_at as createAt,
+		    description as description,
+		    email as email,
+		    github as github,
+		    home_page as homePage ,
+		    location as location,
+		    nick as nick,
+		    number as number,
+		    password as password,
+		    points as points,
+		    role as role,
+		    signature as signature,
+		    topic_count as topicCount,
+		    twitter as twitter,
+		    update_at as updateAt,
+		    username as username
+		from 
+			user
+		<if test="username!=null and username!=''">
+		where
+			username=#{username}
+		</if>
+		<if test="id!=null and id!=''">
+		where
+			id=#{id}
+		</if>
+		<if test="nick!=null and nick!=''">
+		where
+			nick=#{nick}
+		</if>
+		
+ 		
+ 	</select>
+ 	<select id="findByUserId" parameterType="int" 
+ 		resultType="com.fong2.entity.User">
+ 		select	
+ 			id as id,
+			avatar as avatar,
+  			comment_count as commentCount,
+    		company as company,
+			create_at as createAt,
+		    description as description,
+		    email as email,
+		    github as github,
+		    home_page as homePage ,
+		    location as location,
+		    nick as nick,
+		    number as number,
+		    password as password,
+		    points as points,
+		    role as role,
+		    signature as signature,
+		    topic_count as topicCount,
+		    twitter as twitter,
+		    update_at as updateAt,
+		    username as username
+		from 
+			user
+		where
+			id=#{id}
+ 	</select>
+ 	<select id="getLastCommentUserByTopicId" parameterType="int" 
+ 		resultType="com.fong2.entity.User">
+ 		select
+ 			id as id,
+ 			content as content,
+ 			create_at as createAt,
+ 			floor as floor,
+ 			like_count as likeCount,
+ 			status as status
+ 			topic_id as topic,
+ 			user_id as user
+ 		from 
+ 			comment
+ 		where
+ 			topic_id=#{topic}
+ 	</select>
+ 	<select id="countByEmailOrUsername" parameterType="string" 
+ 		resultType="com.fong2.entity.User">
+ 		SELECT 
+ 			id as id,
+			avatar as avatar,
+  			comment_count as commentCount,
+    		company as company,
+			create_at as createAt,
+		    description as description,
+		    email as email,
+		    github as github,
+		    home_page as homePage ,
+		    location as location,
+		    nick as nick,
+		    number as number,
+		    password as password,
+		    points as points,
+		    role as role,
+		    signature as signature,
+		    topic_count as topicCount,
+		    twitter as twitter,
+		    update_at as updateAt,
+		    username as username
+ 		FROM 
+ 			user 
+ 		WHERE 
+ 			email=#{0} OR username=#{1} 
+ 	</select>
+ 	<insert id="saveUser" parameterType="com.fong2.entity.User">
+ 		INSERT INTO 
+ 			user 
+ 		SET
+			id=NULL,
+ 		<if test="avatar!=null">	
+ 			avatar=#{avatar},
+ 		</if>
+ 		<if test="commentCount!=null">
+ 			comment_count=#{commentCount},
+ 		</if>
+ 		<if test="company!=null">
+ 			company=#{company},
+ 		</if>
+ 			create_at=#{createAt},
+ 		<if test="description!=null">
+ 			description=#{description},
+ 		</if>
+ 			email=#{email},
+		<if test="github!=null">
+			github=#{github},
+		</if>
+		<if test="homePage!=null">
+			home_page=#{homePage},
+		</if>
+		<if test="location!=null">
+			location=#{location},
+		</if>
+			nick=#{nick},
+			number=(
+					SELECT MAX(u.number)+1 FROM 
+				(
+					SELECT number FROM user
+				) u
+			),
+		 	password=#{password},
+			points=#{points},
+		<if test="role!=null">
+			role=#{role},
+		</if>
+		<if test="signature!=null">
+			signature=#{signature},
+		</if>
+		<if test="topicCount!=null">
+			topic_count=#{topicCount},
+		</if>
+		<if test="twitter!=null">
+			twitter=#{twitter},
+		</if>
+		<if test="updateAt!=null">
+			update_at=#{updateAt},
+		</if>
+			username=#{username}
+ 	</insert>
+ 	<select id="findAllUser" resultType="com.fong2.entity.User">
+ 		SELECT 
+ 			id as id,
+			avatar as avatar,
+  			comment_count as commentCount,
+    		company as company,
+			create_at as createAt,
+		    description as description,
+		    email as email,
+		    github as github,
+		    home_page as homePage ,
+		    location as location,
+		    nick as nick,
+		    number as number,
+		    password as password,
+		    points as points,
+		    role as role,
+		    signature as signature,
+		    topic_count as topicCount,
+		    twitter as twitter,
+		    update_at as updateAt,
+		    username as username
+ 		FROM 
+ 			user 
+ 		Order by 
+ 			id
+ 	</select>
+ 	<update id="updateUser" parameterType="com.fong2.entity.User">
+ 		UPDATE 
+ 			user 
+	 	<set>
+	 		<if test="avatar!=null">	
+	 			avatar=#{avatar},
+	 		</if>
+	 		<if test="commentCount==1">
+	 			comment_count=comment_count+1,
+	 		</if>
+	 		<if test="commentCount>1">
+	 			comment_count=#{commentCount},
+	 		</if>
+	 		<if test="company!=null">
+	 			company=#{company},
+	 		</if>
+	 		<if test="description!=null">
+	 			description=#{description},
+	 		</if>
+	 			email=#{email},
+			<if test="github!=null">
+				github=#{github},
+			</if>
+			<if test="homePage!=null">
+				home_page=#{homePage},
+			</if>
+			<if test="location!=null">
+				location=#{location},
+			</if>
+			<if test="nick!=null">
+				nick=#{nick},
+			</if>
+			<if test="password!=null">	
+			 	password=#{password},
+			</if>
+			<if test="points!=null">
+				points=#{points},
+			</if>
+			<if test="role!=null">
+				role=#{role},
+			</if>
+			<if test="signature!=null">
+				signature=#{signature},
+			</if>
+			<if test="topicCount==1">
+				topic_count=topic_count+1,
+			</if>
+			<if test="topicCount>1">
+				topic_count=#{topicCount},
+			</if>
+			<if test="twitter!=null">
+				twitter=#{twitter},
+			</if>
+			<if test="updateAt!=null">
+				update_at=#{updateAt},
+			</if>
+	 	</set>
+	 	WHERE
+	 	<if test="id!=null">
+	 		id=#{id}
+	 	</if> 
+	 	<if test="email!=null">
+	 		email=#{email}
+	 	</if>	
+ 	</update>
+ 	
+ </mapper>
